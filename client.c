@@ -6,7 +6,7 @@
 /*   By: nkhoudro <nkhoudro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 07:33:01 by nkhoudro          #+#    #+#             */
-/*   Updated: 2023/03/11 22:34:45 by nkhoudro         ###   ########.fr       */
+/*   Updated: 2023/03/13 21:17:20 by nkhoudro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	int i;
-	char c = 'a';
+	char	c;
+	int		i;
 
+	c = 'a';
 	i = 0;
 	while (i < 8)
 	{

@@ -6,7 +6,7 @@
 /*   By: nkhoudro <nkhoudro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 07:32:56 by nkhoudro          #+#    #+#             */
-/*   Updated: 2023/03/11 22:41:00 by nkhoudro         ###   ########.fr       */
+/*   Updated: 2023/03/13 20:18:22 by nkhoudro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,17 @@
 
 void	handler(int num)
 {
-	char c;
-	int i;
-
-	i = 0;
-	c = 0;
-	while (i < 8)
+	static char	c = 0;
+	static int	i = 0;
+	if (num == SIGUSR1)
+		c = c + (1 << i);
+	i++;
+	if (i == 8)
 	{
-		if (SIGUSR1)
-			c = c + (1 << i);
-		i++;
+		write(1, &c, 1);
+		c = 0;
+		i = 0;
 	}
-	write(1, &c, 1);
 }
 
 int	main(int argc, char *argv[])
