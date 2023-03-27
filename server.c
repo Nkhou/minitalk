@@ -6,15 +6,50 @@
 /*   By: nkhoudro <nkhoudro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 07:32:56 by nkhoudro          #+#    #+#             */
-/*   Updated: 2023/03/26 19:51:35 by nkhoudro         ###   ########.fr       */
+/*   Updated: 2023/03/27 01:52:18 by nkhoudro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
+void	ft_error(void)
+{
+	ft_putstr_fd("Error", 2);
+	exit(1);
+}
+
+void ft_handle(unsigned char c , siginfo_t *siginfo_t)
+{
+	t_unicode static unicode;
+	static int  	pid ;
+	
+	if (pid != siginfo_t->si_pid)
+	{
+		pid = siginfo_t->si_pid;
+		unicode.bytenum = 0;
+		unicode.i =  0;
+		ft_bzero(unicode.p,4);
+	}
+	
+	if (c >= 192 && c <= 223)
+		unicode.bytenum = 2;
+	else if (c >= 224 && c <= 239)
+		unicode.bytenum = 3;
+	else if (c >= 240 && c <= 255)
+		unicode.bytenum = 4;
+	unicode.p[unicode.i++] = c;
+	if(unicode.i == unicode.bytenum)
+	{
+		write(1, unicode.p, unicode.i);
+		unicode.bytenum = 0;
+		unicode.i =  0;
+		ft_bzero(unicode.p,4);
+	}
+}
+
 void	handler(int num, siginfo_t *siginfo, void *context)
 {
-	static char	c = 0;
+	static unsigned char	c = 0;
 	static int	i = 0;
 	static int	pid = 0;
 
@@ -30,7 +65,10 @@ void	handler(int num, siginfo_t *siginfo, void *context)
 	i++;
 	if (i == 8)
 	{
-		write(1, &c, 1);
+		if(c  >= 0 && c < 128)
+			write(1, &c, 1);
+		else 
+			ft_handle(c,siginfo);
 		if (c == 0)
 			kill(siginfo->si_pid, SIGUSR1);
 		c = 0;
@@ -45,14 +83,19 @@ int	main(int argc, char *argv[])
 
 	(void)argc;
 	(void)argv;
-	pid = getpid();
-	ft_putnbr_fd(pid, 1);
-	ft_putchar_fd('\n', 1);
-	sa.sa_sigaction = handler;
-	sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
-	while (1)
-		pause();
+	if (argc == 1)
+	{
+		pid = getpid();
+		ft_putnbr_fd(pid, 1);
+		ft_putchar_fd('\n', 1);
+		sa.sa_sigaction = handler;
+		sa.sa_flags = SA_SIGINFO;
+		sigaction(SIGUSR1, &sa, NULL);
+		sigaction(SIGUSR2, &sa, NULL);
+		while (1)
+			pause();
+	}
+	else
+		ft_error();
 	return (0);
 }
