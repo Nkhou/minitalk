@@ -6,31 +6,24 @@
 /*   By: nkhoudro <nkhoudro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 07:32:56 by nkhoudro          #+#    #+#             */
-/*   Updated: 2023/03/27 01:52:18 by nkhoudro         ###   ########.fr       */
+/*   Updated: 2023/03/28 22:11:35 by nkhoudro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
-void	ft_error(void)
+void	ft_handle(unsigned char c, siginfo_t *siginfo_t)
 {
-	ft_putstr_fd("Error", 2);
-	exit(1);
-}
+	static int			pid;
+	t_unicode static	unicode;
 
-void ft_handle(unsigned char c , siginfo_t *siginfo_t)
-{
-	t_unicode static unicode;
-	static int  	pid ;
-	
 	if (pid != siginfo_t->si_pid)
 	{
 		pid = siginfo_t->si_pid;
 		unicode.bytenum = 0;
-		unicode.i =  0;
-		ft_bzero(unicode.p,4);
+		unicode.i = 0;
+		ft_bzero(unicode.p, 4);
 	}
-	
 	if (c >= 192 && c <= 223)
 		unicode.bytenum = 2;
 	else if (c >= 224 && c <= 239)
@@ -38,20 +31,20 @@ void ft_handle(unsigned char c , siginfo_t *siginfo_t)
 	else if (c >= 240 && c <= 255)
 		unicode.bytenum = 4;
 	unicode.p[unicode.i++] = c;
-	if(unicode.i == unicode.bytenum)
+	if (unicode.i == unicode.bytenum)
 	{
 		write(1, unicode.p, unicode.i);
 		unicode.bytenum = 0;
-		unicode.i =  0;
-		ft_bzero(unicode.p,4);
+		unicode.i = 0;
+		ft_bzero(unicode.p, 4);
 	}
 }
 
 void	handler(int num, siginfo_t *siginfo, void *context)
 {
 	static unsigned char	c = 0;
-	static int	i = 0;
-	static int	pid = 0;
+	static int				i = 0;
+	static int				pid = 0;
 
 	(void)context;
 	if (pid != siginfo->si_pid)
@@ -65,10 +58,10 @@ void	handler(int num, siginfo_t *siginfo, void *context)
 	i++;
 	if (i == 8)
 	{
-		if(c  >= 0 && c < 128)
+		if ((c >= 0) && (c < 128))
 			write(1, &c, 1);
-		else 
-			ft_handle(c,siginfo);
+		else
+			ft_handle(c, siginfo);
 		if (c == 0)
 			kill(siginfo->si_pid, SIGUSR1);
 		c = 0;
