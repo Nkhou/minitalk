@@ -30,8 +30,6 @@ Server PID: 12345
 
     https://www.gnu.org/software/libc/manual/html_node/Signal-Handling.html
 
-    Protocol Design
-
 🧠 Learning Outcomes
 
     Mastered UNIX signal programming
