@@ -45,6 +45,3 @@ Server PID: 12345
 2. **Protocol Insight**: Explains the binary encoding approach.  
 3. **Educational Focus**: Highlights kernel concepts learned.  
 
-**Pro Tip**: Add a **`## 🐞 Known Issues`** section if you want contributors to help (e.g., *"Long messages may delay ACKs"*).  
-
-Want it **more technical** or **whimsical**? Let me adjust! 🛠️
